@@ -1,4 +1,4 @@
-package Coinbase_RESTapi
+package cbintxapi
 
 import (
 	"bytes"

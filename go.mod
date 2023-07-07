@@ -1,4 +1,4 @@
-module Coinbase_RESTapi
+module cbintxapi
 
 go 1.19
 
