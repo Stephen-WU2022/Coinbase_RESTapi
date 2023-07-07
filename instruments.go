@@ -51,47 +51,43 @@ type QuteperInstrumentResponse struct {
 	Timestamp        string `json:"timestamp"`
 }
 
-func (c *Client) Instruments() (instruments []*InstrumentResponse) {
+func (c *Client) Instruments() (instruments []*InstrumentResponse, err error) {
 	path := "/api/v1/instruments"
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &instruments)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return instruments
+	return instruments, nil
 }
 
-func (c *Client) Instrument(symbol string) (instrument *InstrumentResponse) {
+// Instrument symbol accepts symbol, instrument_id, instrument_uuid
+func (c *Client) Instrument(symbol string) (instrument *InstrumentResponse, err error) {
 	path := fmt.Sprintf("/api/v1/instruments/%s", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &instrument)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return instrument
+	return instrument, nil
 }
 
-func (c *Client) QuteperInstrument(symbol string) (quteperinstrument *QuteperInstrumentResponse) {
+// QuteperInstrument symbol accepts symbol, instrument_id, instrument_uuid
+func (c *Client) QuteperInstrument(symbol string) (quteperinstrument *QuteperInstrumentResponse, err error) {
 	path := fmt.Sprintf("/api/v1/instruments/%s/quote", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &quteperinstrument)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return quteperinstrument
+	return quteperinstrument, nil
 }

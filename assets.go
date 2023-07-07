@@ -27,47 +27,43 @@ type NetworksperAssetResponse struct {
 	Processingtime      int    `json:"processing_time"`
 }
 
-func (c *Client) Assets() (assets []*AssetResponse) {
+func (c *Client) Assets() (assets []*AssetResponse, err error) {
 	path := "/api/v1/assets"
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &assets)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return assets
+	return assets, nil
 }
 
-func (c *Client) Asset(symbol string) (asset *AssetResponse) {
+// Asset symbol accepts asset_name, asset_id, asset_uuid
+func (c *Client) Asset(symbol string) (asset *AssetResponse, err error) {
 	path := fmt.Sprintf("/api/v1/assets/%s", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &asset)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return asset
+	return asset, nil
 }
 
-func (c *Client) NetworksperAsset(symbol string) (networks []*NetworksperAssetResponse) {
+// NetworksperAsset symbol accepts asset_name, asset_id, asset_uuid
+func (c *Client) NetworksperAsset(symbol string) (networks []*NetworksperAssetResponse, err error) {
 	path := fmt.Sprintf("/api/v1/assets/%s/networks", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
 	err = json.Unmarshal(resp, &networks)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return nil, err
 	}
-	return networks
+	return networks, nil
 }
