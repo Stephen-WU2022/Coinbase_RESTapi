@@ -15,12 +15,14 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 const Endpoint = "https://api.international.coinbase.com"
 
+// Client is a class for interacting with the Coinbase international exchange restAPI, subaccount for now empty
 type Client struct {
 	key, secret, passphase string
 	subaccount             string
-	client                 *http.Client
+	client                 *http.Client //http client
 }
 
+// Create a client struct
 func NewClient(key, secret, passphase string) *Client {
 	hc := &http.Client{
 		Timeout: 10 * time.Second,
@@ -33,10 +35,11 @@ func NewClient(key, secret, passphase string) *Client {
 	}
 }
 
+// form a request, sign it if needed, sign for now empty
 func (c *Client) newRequest(method, path string, body []byte, sign bool) (*http.Request, error) {
 
-	u, _ := url.ParseRequestURI(Endpoint)
-	u.Path = u.Path + path
+	u, _ := url.ParseRequestURI(Endpoint) // parse endpoint and form a url
+	u.Path = u.Path + path                // add parm to url
 	req, err := http.NewRequest(method, u.String(), bytes.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -54,16 +57,17 @@ func (c *Client) newRequest(method, path string, body []byte, sign bool) (*http.
 	return req, nil
 }
 
+// send request and get response
 func (c *Client) sendRequest(method, path string, body []byte, sign bool) (response []byte, err error) {
 	req, err := c.newRequest(method, path, body, sign)
 	if err != nil {
 		return nil, err
 	}
-	res, err := c.client.Do(req)
+	res, err := c.client.Do(req) // if response is error message and err is nil, may not trigger the defer func
 	if err != nil {
 		return nil, err
 	}
-	defer res.Body.Close()
+	defer res.Body.Close() // close need to be done before error(close the do func), otherwise it would be ignored
 	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("status code: %d", res.StatusCode)
 	}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// API response json format
 type AssetResponse struct {
 	Assetid          string  `json:"asset_id"`
 	Assetuuid        string  `json:"asset_uuid"`
@@ -13,6 +14,7 @@ type AssetResponse struct {
 	Collateralweight float32 `json:"collateral_weight"`
 }
 
+// API response json format
 type NetworksperAssetResponse struct {
 	Assetid             string `json:"asset_id"`
 	Assetuuid           string `json:"asset_uuid"`
@@ -27,20 +29,21 @@ type NetworksperAssetResponse struct {
 	Processingtime      int    `json:"processing_time"`
 }
 
+// Assets for List assets supported by Coinbase, Returns a list of all supported assets
 func (c *Client) Assets() (assets []*AssetResponse, err error) {
 	path := "/api/v1/assets"
-	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
+	resp, err := c.sendRequest(http.MethodGet, path, nil, false) //send restful request, get response
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(resp, &assets)
+	err = json.Unmarshal(resp, &assets) //decode json to struct
 	if err != nil {
 		return nil, err
 	}
 	return assets, nil
 }
 
-// Asset symbol accepts asset_name, asset_id, asset_uuid
+// Asset symbol accepts asset_name, asset_id, asset_uuid, for Get asset details supported by Coinbase
 func (c *Client) Asset(symbol string) (asset *AssetResponse, err error) {
 	path := fmt.Sprintf("/api/v1/assets/%s", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
@@ -54,7 +57,7 @@ func (c *Client) Asset(symbol string) (asset *AssetResponse, err error) {
 	return asset, nil
 }
 
-// NetworksperAsset symbol accepts asset_name, asset_id, asset_uuid
+// NetworksperAsset symbol accepts asset_name, asset_id, asset_uuid, for Get supported networks for an asset
 func (c *Client) NetworksperAsset(symbol string) (networks []*NetworksperAssetResponse, err error) {
 	path := fmt.Sprintf("/api/v1/assets/%s/networks", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)

@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// API response json format
 type InstrumentResponse struct {
 	Instrumentid       string  `json:"instrument_id"`
 	Instrumentuuid     string  `json:"instrument_uuid"`
@@ -35,6 +36,7 @@ type InstrumentResponse struct {
 	Tradingstate       string  `json:"trading_state"`
 }
 
+// API response json format
 type QuteperInstrumentResponse struct {
 	Bestbidprice     string `json:"best_bid_price"`
 	Bestbidsize      string `json:"best_bid_size"`
@@ -51,20 +53,21 @@ type QuteperInstrumentResponse struct {
 	Timestamp        string `json:"timestamp"`
 }
 
+// Coinbase List instruments, returns all of the instruments that are available for trading
 func (c *Client) Instruments() (instruments []*InstrumentResponse, err error) {
 	path := "/api/v1/instruments"
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
 	if err != nil {
 		return nil, err
 	}
-	err = json.Unmarshal(resp, &instruments)
+	err = json.Unmarshal(resp, &instruments) // Unmarshal JSON response to instrumentresponse struct
 	if err != nil {
 		return nil, err
 	}
 	return instruments, nil
 }
 
-// Instrument symbol accepts symbol, instrument_id, instrument_uuid
+// Instrument symbol accepts symbol, instrument_id, instrument_uuid, returns a single instrument by symbol
 func (c *Client) Instrument(symbol string) (instrument *InstrumentResponse, err error) {
 	path := fmt.Sprintf("/api/v1/instruments/%s", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
@@ -78,7 +81,7 @@ func (c *Client) Instrument(symbol string) (instrument *InstrumentResponse, err 
 	return instrument, nil
 }
 
-// QuteperInstrument symbol accepts symbol, instrument_id, instrument_uuid
+// QuteperInstrument symbol accepts symbol, instrument_id, instrument_uuid, retrieves the current quote for a specific instrument
 func (c *Client) QuteperInstrument(symbol string) (quteperinstrument *QuteperInstrumentResponse, err error) {
 	path := fmt.Sprintf("/api/v1/instruments/%s/quote", symbol)
 	resp, err := c.sendRequest(http.MethodGet, path, nil, false)
